@@ -48,11 +48,13 @@ namespace ExpenseTracker.Services
 
                 TotalExpense = expenses.Sum(e => e.Amount),
 
-                TotalTransactions = expenses.Count + incomes.Count,
+                TotalTransactions = incomes.Count + expenses.Count,
 
                 RecentExpenses = expenses.Take(5).ToList(),
 
-                RecentIncomes = incomes.Take(5).ToList()
+                RecentIncomes = incomes.Take(5).ToList(),
+
+                ExpenseCategoryChart = await GetExpenseCategoryChartAsync(userId)
             };
         }
 
@@ -119,6 +121,19 @@ namespace ExpenseTracker.Services
             _context.Incomes.Remove(income);
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<ExpenseCategoryChartViewModel>> GetExpenseCategoryChartAsync(string userId)
+        {
+            return await _context.Expenses
+                .Where(e => e.UserId == userId)
+                .GroupBy(e => e.Category.Name)
+                .Select(g => new ExpenseCategoryChartViewModel
+                {
+                    Category = g.Key,
+                    TotalAmount = g.Sum(x => x.Amount)
+                })
+                .ToListAsync();
         }
     }
 }

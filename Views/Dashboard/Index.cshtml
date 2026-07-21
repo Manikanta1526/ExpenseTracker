@@ -6,6 +6,7 @@
 
 <h2 class="mb-4">Dashboard</h2>
 
+<!-- Summary Cards -->
 <div class="row">
 
     <div class="col-md-3">
@@ -46,12 +47,57 @@
 
 </div>
 
-<!-- Recent Transactions Section -->
+<!-- Charts -->
+<div class="row mt-4">
 
+    <!-- Expense by Category -->
+    <div class="col-lg-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-primary text-white">
+                Expense by Category
+            </div>
+
+            <div class="card-body">
+
+                <div style="height:350px;">
+                    <canvas id="expensePieChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Monthly Expenses -->
+    <div class="col-lg-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-success text-white">
+                Monthly Expenses
+            </div>
+
+            <div class="card-body">
+
+                <div style="height:350px;">
+                    <canvas id="monthlyExpenseChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Recent Transactions -->
 <div class="row mt-4">
 
     <!-- Recent Expenses -->
-
     <div class="col-md-6">
 
         <div class="card shadow">
@@ -99,7 +145,6 @@
     </div>
 
     <!-- Recent Income -->
-
     <div class="col-md-6">
 
         <div class="card shadow">
@@ -147,3 +192,77 @@
     </div>
 
 </div>
+
+@section Scripts
+{
+    <script>
+
+        const labels = [
+                @foreach (var item in Model.ExpenseCategoryChart)
+            {
+                @: "@item.Category",
+            }
+                ];
+
+        const data = [
+                @foreach (var item in Model.ExpenseCategoryChart)
+            {
+                @: @item.TotalAmount,
+            }
+                ];
+
+        const ctx = document.getElementById('expensePieChart');
+
+        new Chart(ctx, {
+
+            type: 'pie',
+
+            data: {
+
+                labels: labels,
+
+                datasets: [{
+
+                    label: 'Expenses',
+
+                    data: data,
+
+                    backgroundColor: [
+                        '#4e79a7',
+                        '#f28e2b',
+                        '#e15759',
+                        '#76b7b2',
+                        '#59a14f',
+                        '#edc948',
+                        '#b07aa1',
+                        '#ff9da7',
+                        '#9c755f',
+                        '#bab0ab'
+                    ],
+
+                    borderWidth: 1
+
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: 'bottom'
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
+}

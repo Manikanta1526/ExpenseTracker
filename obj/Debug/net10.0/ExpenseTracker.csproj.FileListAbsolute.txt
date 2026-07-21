@@ -326,3 +326,4 @@ C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\refin
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\ExpenseTracker.pdb
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\ExpenseTracker.genruntimeconfig.cache
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\ref\ExpenseTracker.dll
+C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\ExpenseTracker.sourcelink.json

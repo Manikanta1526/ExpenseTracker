@@ -15,5 +15,8 @@ namespace ExpenseTracker.ViewModels
         public List<Expense> RecentExpenses { get; set; } = new();
 
         public List<Income> RecentIncomes { get; set; } = new();
+
+        // NEW
+        public List<ExpenseCategoryChartViewModel> ExpenseCategoryChart { get; set; } = new();
     }
 }

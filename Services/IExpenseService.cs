@@ -29,5 +29,6 @@ namespace ExpenseTracker.Services
 
         Task DeleteIncomeAsync(Income income);
 
+        Task<List<ExpenseCategoryChartViewModel>> GetExpenseCategoryChartAsync(string userId);
     }
 }
