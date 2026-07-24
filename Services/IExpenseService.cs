@@ -30,5 +30,20 @@ namespace ExpenseTracker.Services
         Task DeleteIncomeAsync(Income income);
 
         Task<List<ExpenseCategoryChartViewModel>> GetExpenseCategoryChartAsync(string userId);
+
+        Task<List<MonthlyExpenseChartViewModel>> GetMonthlyExpenseChartAsync(string userId);
+
+        Task<Budget?> GetCurrentBudgetAsync(string userId);
+
+        Task SaveBudgetAsync(Budget budget);
+
+        Task<ExpenseFilterViewModel> GetFilteredExpensesAsync(
+    string userId,
+    ExpenseFilterViewModel filter);
+
+       
+
+        Task<byte[]> ExportDashboardToExcelAsync(string userId);
+
     }
 }

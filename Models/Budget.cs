@@ -11,11 +11,13 @@ namespace ExpenseTracker.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal MonthlyBudget { get; set; }
 
-        public string Month { get; set; } = string.Empty;
+        public int Month { get; set; }
 
-        public string? UserId { get; set; }
+        public int Year { get; set; }
 
-        [ForeignKey("UserId")]
+        public string UserId { get; set; } = string.Empty;
+
+        [ForeignKey(nameof(UserId))]
         public ApplicationUser? User { get; set; }
     }
 }

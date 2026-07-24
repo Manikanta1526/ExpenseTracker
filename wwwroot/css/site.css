@@ -29,3 +29,60 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.bg-dark {
+    background: #1E293B !important;
+}
+
+.nav-link {
+    border-radius: 10px;
+    padding: 12px;
+    transition: .3s;
+}
+
+    .nav-link:hover {
+        background: #2563EB;
+        transform: translateX(5px);
+    }
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+    .card:hover {
+        transform: translateY(-4px);
+        transition: .3s;
+        box-shadow: 0 10px 25px rgba(0,0,0,.15);
+    }
+
+.dashboard-card {
+    color: white;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: .3s;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-8px);
+    }
+
+.income-card {
+    background: linear-gradient(135deg,#16a34a,#22c55e);
+}
+
+.expense-card {
+    background: linear-gradient(135deg,#dc2626,#ef4444);
+}
+
+.savings-card {
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+}
+
+.transaction-card {
+    background: linear-gradient(135deg,#d97706,#f59e0b);
+}
+
+.dashboard-card i {
+    opacity: .25;
+}

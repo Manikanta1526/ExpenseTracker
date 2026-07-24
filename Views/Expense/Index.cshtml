@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ExpenseTracker.Models.Expense>
+﻿@model ExpenseTracker.ViewModels.ExpenseFilterViewModel
 
 @{
     ViewData["Title"] = "Expenses";
@@ -11,6 +11,70 @@
         Add Expense
     </a>
 </p>
+
+<!-- Filter Form Starts Here -->
+
+<form method="get" class="row g-3 mb-4">
+
+    <div class="col-md-3">
+        <input asp-for="SearchTerm"
+               class="form-control"
+               placeholder="Search Title" />
+    </div>
+
+    <div class="col-md-2">
+
+        <select asp-for="CategoryId"
+                asp-items="@(new SelectList(Model.Categories, "CategoryId", "Name"))"
+                class="form-select">
+
+            <option value="">All Categories</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-2">
+
+        <input asp-for="StartDate"
+               type="date"
+               class="form-control" />
+
+    </div>
+
+    <div class="col-md-2">
+
+        <input asp-for="EndDate"
+               type="date"
+               class="form-control" />
+
+    </div>
+
+    <div class="col-md-2">
+
+        <select asp-for="SortBy"
+                class="form-select">
+
+            <option value="Date">Newest</option>
+
+            <option value="Amount">Highest Amount</option>
+
+        </select>
+
+    </div>
+
+    <div class="col-md-1">
+
+        <button class="btn btn-primary w-100">
+            Search
+        </button>
+
+    </div>
+
+</form>
+
+<!-- Filter Form Ends Here -->
+
 
 <table class="table table-bordered table-striped">
 
@@ -34,36 +98,79 @@
 
     <tbody>
 
-        @foreach (var item in Model)
+        @if (!Model.Expenses.Any())
         {
             <tr>
-
-                <td>@item.Title</td>
-
-                <td>@item.Amount.ToString("C")</td>
-
-                <td>@item.Category?.Name</td>
-
-                <td>@item.Date.ToShortDateString()</td>
-
-                <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@item.ExpenseId"
-                       class="btn btn-warning btn-sm">
-                        Edit
-                    </a>
-
-                    <a asp-action="Delete"
-                       asp-route-id="@item.ExpenseId"
-                       class="btn btn-danger btn-sm">
-                        Delete
-                    </a>
-
+                <td colspan="5" class="text-center text-muted py-4">
+                    No expenses found.
                 </td>
-
             </tr>
+        }
+        else
+        {
+            @foreach (var item in Model.Expenses)
+            {
+                <tr>
+
+                    <td>@item.Title</td>
+
+                    <td>@item.Amount.ToString("C")</td>
+                    <td>
+                        <span class="badge bg-primary">
+                            @item.Category?.Name
+                        </span>
+                    </td>
+
+                    <td>@item.Date.ToString("dd MMM yyyy")</td>
+
+                    <td>
+                        <a asp-action="Edit"
+                           asp-route-id="@item.ExpenseId"
+                           class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.ExpenseId"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure you want to delete this expense?')">
+                            Delete
+                        </a>
+                    </td>
+
+                </tr>
+            }
         }
 
     </tbody>
 
 </table>
+
+<!-- Pagination -->
+
+<nav class="mt-4">
+
+    <ul class="pagination justify-content-center">
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+
+                <a class="page-link"
+                   asp-route-PageNumber="@i"
+                   asp-route-SearchTerm="@Model.SearchTerm"
+                   asp-route-CategoryId="@Model.CategoryId"
+                   asp-route-StartDate="@Model.StartDate"
+                   asp-route-EndDate="@Model.EndDate"
+                   asp-route-SortBy="@Model.SortBy">
+
+                    @i
+
+                </a>
+
+            </li>
+        }
+
+    </ul>
+
+</nav>

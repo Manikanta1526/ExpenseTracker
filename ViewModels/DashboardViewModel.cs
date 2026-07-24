@@ -18,5 +18,24 @@ namespace ExpenseTracker.ViewModels
 
         // NEW
         public List<ExpenseCategoryChartViewModel> ExpenseCategoryChart { get; set; } = new();
+
+        public List<MonthlyExpenseChartViewModel> MonthlyExpenseChart { get; set; } = new();
+
+        public decimal MonthlyBudget { get; set; }
+
+        public decimal RemainingBudget => MonthlyBudget - TotalExpense;
+
+        public double BudgetUsedPercentage =>
+            MonthlyBudget == 0 ? 0 :
+            (double)(TotalExpense / MonthlyBudget * 100);
+
+        public bool IsBudgetExceeded =>
+    TotalExpense > MonthlyBudget && MonthlyBudget > 0;
+
+        public decimal HighestExpense { get; set; }
+
+        public decimal AverageExpense { get; set; }
+
+        public string TopCategory { get; set; } = string.Empty;
     }
 }

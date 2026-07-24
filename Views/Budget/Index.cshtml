@@ -1,0 +1,35 @@
+﻿@model ExpenseTracker.ViewModels.BudgetViewModel
+
+<h2>Monthly Budget</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<form asp-action="Index" method="post">
+
+    <div class="mb-3">
+
+        <label asp-for="MonthlyBudget"></label>
+
+        <input asp-for="MonthlyBudget" class="form-control" />
+
+        <span asp-validation-for="MonthlyBudget"
+              class="text-danger"></span>
+
+    </div>
+
+    <button class="btn btn-success">
+        Save Budget
+    </button>
+
+</form>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

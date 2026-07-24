@@ -21,7 +21,31 @@ namespace ExpenseTracker.Controllers
 
             var dashboard = await _expenseService.GetDashboardDataAsync(userId!);
 
+            // TEMPORARY DEBUG
+            foreach (var item in dashboard.MonthlyExpenseChart)
+            {
+                Console.WriteLine($"{item.Month} - {item.TotalExpense}");
+            }
+
             return View(dashboard);
+        }
+
+        // Placeholder action for Excel Export
+public async Task<IActionResult> ExportExcel()
+{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+    var file = await _expenseService.ExportDashboardToExcelAsync(userId);
+
+    return File(
+        file,
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        $"DashboardReport_{DateTime.Now:yyyyMMdd}.xlsx");
+}
+        // Placeholder action for PDF Export
+        public IActionResult ExportPdf()
+        {
+            return Content("PDF export coming next.");
         }
     }
 }

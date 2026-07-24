@@ -155,13 +155,13 @@ namespace ExpenseTracker.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(ExpenseFilterViewModel filter)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
-            var expenses = await _expenseService.GetAllExpensesAsync(userId);
+            var model = await _expenseService.GetFilteredExpensesAsync(userId, filter);
 
-            return View(expenses);
+            return View(model);
         }
     }
 }
