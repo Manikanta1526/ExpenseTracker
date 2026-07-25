@@ -17,12 +17,12 @@ namespace ExpenseTracker.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ExpenseTracker.Models.ApplicationUser", b =>
+            modelBuilder.Entity("ExpenseTracker.Data.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -42,6 +42,7 @@ namespace ExpenseTracker.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -350,7 +351,7 @@ namespace ExpenseTracker.Data.Migrations
 
             modelBuilder.Entity("ExpenseTracker.Models.Budget", b =>
                 {
-                    b.HasOne("ExpenseTracker.Models.ApplicationUser", "User")
+                    b.HasOne("ExpenseTracker.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -367,7 +368,7 @@ namespace ExpenseTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpenseTracker.Models.ApplicationUser", "User")
+                    b.HasOne("ExpenseTracker.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -378,7 +379,7 @@ namespace ExpenseTracker.Data.Migrations
 
             modelBuilder.Entity("ExpenseTracker.Models.Income", b =>
                 {
-                    b.HasOne("ExpenseTracker.Models.ApplicationUser", "User")
+                    b.HasOne("ExpenseTracker.Data.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -396,7 +397,7 @@ namespace ExpenseTracker.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ExpenseTracker.Models.ApplicationUser", null)
+                    b.HasOne("ExpenseTracker.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -405,7 +406,7 @@ namespace ExpenseTracker.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ExpenseTracker.Models.ApplicationUser", null)
+                    b.HasOne("ExpenseTracker.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -420,7 +421,7 @@ namespace ExpenseTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpenseTracker.Models.ApplicationUser", null)
+                    b.HasOne("ExpenseTracker.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -429,7 +430,7 @@ namespace ExpenseTracker.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ExpenseTracker.Models.ApplicationUser", null)
+                    b.HasOne("ExpenseTracker.Data.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
