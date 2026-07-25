@@ -55,6 +55,9 @@ namespace ExpenseTracker.Controllers
 
             await _expenseService.AddExpenseAsync(expense);
 
+            // Add this line
+            TempData["Success"] = "Expense added successfully!";
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -71,21 +74,23 @@ namespace ExpenseTracker.Controllers
 
             return View(expense);
         }
-
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int expenseId)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
             var expense = await _expenseService.GetExpenseByIdAsync(expenseId, userId);
 
             if (expense == null)
             {
-                return NotFound();
+                TempData["Error"] = "Expense not found.";
+                return RedirectToAction(nameof(Index));
             }
 
             await _expenseService.DeleteExpenseAsync(expense);
+
+            TempData["Success"] = "Expense deleted successfully!";
 
             return RedirectToAction(nameof(Index));
         }
@@ -142,7 +147,8 @@ namespace ExpenseTracker.Controllers
 
             if (expense == null)
             {
-                return NotFound();
+                TempData["Error"] = "Expense not found.";
+                return RedirectToAction(nameof(Index));
             }
 
             expense.Title = model.Title;
@@ -153,11 +159,15 @@ namespace ExpenseTracker.Controllers
 
             await _expenseService.UpdateExpenseAsync(expense);
 
+            TempData["Success"] = "Expense updated successfully!";
+
             return RedirectToAction(nameof(Index));
         }
         public async Task<IActionResult> Index(ExpenseFilterViewModel filter)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            Console.WriteLine("TempData Success = " + TempData["Success"]);
 
             var model = await _expenseService.GetFilteredExpensesAsync(userId, filter);
 

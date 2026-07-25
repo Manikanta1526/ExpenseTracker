@@ -326,7 +326,6 @@ C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\Expen
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\ExpenseTracker.genruntimeconfig.cache
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\ref\ExpenseTracker.dll
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\ExpenseTracker.sourcelink.json
-C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\compressed\lsz27yj9kw-{0}-gb2u27ylci-gb2u27ylci.gz
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\bin\Debug\net10.0\ClosedXML.dll
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\bin\Debug\net10.0\ClosedXML.Parser.dll
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\bin\Debug\net10.0\DocumentFormat.OpenXml.dll
@@ -335,3 +334,4 @@ C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\bin\Debug\net10.0\Excel
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\bin\Debug\net10.0\RBush.dll
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\bin\Debug\net10.0\SixLabors.Fonts.dll
 C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\bin\Debug\net10.0\System.IO.Packaging.dll
+C:\Users\Dell\source\repos\ExpenseTracker\ExpenseTracker\obj\Debug\net10.0\compressed\lsz27yj9kw-{0}-0ekkww5g4k-0ekkww5g4k.gz

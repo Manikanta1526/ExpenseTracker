@@ -30,8 +30,20 @@ namespace ExpenseTracker.Controllers
             return View(dashboard);
         }
 
+        public async Task<IActionResult> ExportPdf()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+
+            var pdf = await _expenseService.ExportDashboardToPdfAsync(userId);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"ExpenseReport_{DateTime.Now:yyyyMMdd}.pdf");
+        }
+
         // Placeholder action for Excel Export
-public async Task<IActionResult> ExportExcel()
+        public async Task<IActionResult> ExportExcel()
 {
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
@@ -43,9 +55,8 @@ public async Task<IActionResult> ExportExcel()
         $"DashboardReport_{DateTime.Now:yyyyMMdd}.xlsx");
 }
         // Placeholder action for PDF Export
-        public IActionResult ExportPdf()
-        {
-            return Content("PDF export coming next.");
-        }
+
+
+
     }
 }

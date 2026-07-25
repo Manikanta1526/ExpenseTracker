@@ -86,3 +86,40 @@ body {
 .dashboard-card i {
     opacity: .25;
 }
+
+.dashboard-card {
+    border-radius: 18px;
+    transition: all .3s ease;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,.12);
+    }
+
+.icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-purple {
+    background-color: #6f42c1 !important;
+    color: white;
+}
+
+.table thead {
+    background: #2563eb;
+    color: white;
+}
+
+.table tbody tr {
+    transition: .2s;
+}
+
+    .table tbody tr:hover {
+        background: #eef5ff;
+    }

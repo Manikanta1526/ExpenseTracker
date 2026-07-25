@@ -45,5 +45,7 @@ namespace ExpenseTracker.Services
 
         Task<byte[]> ExportDashboardToExcelAsync(string userId);
 
+        Task<byte[]> ExportDashboardToPdfAsync(string userId);
+
     }
 }

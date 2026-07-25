@@ -3,6 +3,9 @@ using ExpenseTracker.Models;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.ViewModels;
 using ClosedXML.Excel;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace ExpenseTracker.Services
 {
@@ -362,6 +365,65 @@ return new DashboardViewModel
             workbook.SaveAs(stream);
 
             return stream.ToArray();
+        }
+
+        public async Task<byte[]> ExportDashboardToPdfAsync(string userId)
+        {
+            var dashboard = await GetDashboardDataAsync(userId);
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(30);
+
+                    page.Header()
+                        .Text("Expense Tracker Report")
+                        .SemiBold()
+                        .FontSize(24);
+
+                    page.Content().Column(col =>
+                    {
+                        col.Spacing(8);
+
+                        col.Item().Text($"Total Income : {dashboard.TotalIncome:C}");
+                        col.Item().Text($"Total Expense : {dashboard.TotalExpense:C}");
+                        col.Item().Text($"Savings : {dashboard.Savings:C}");
+                        col.Item().Text($"Highest Expense : {dashboard.HighestExpense:C}");
+                        col.Item().Text($"Average Expense : {dashboard.AverageExpense:C}");
+                        col.Item().Text($"Top Category : {dashboard.TopCategory}");
+
+                        col.Item().PaddingTop(15);
+
+                        col.Item().Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.RelativeColumn();
+                                columns.RelativeColumn();
+                            });
+
+                            table.Header(header =>
+                            {
+                                header.Cell().Text("Category");
+                                header.Cell().Text("Amount");
+                            });
+
+                            foreach (var item in dashboard.ExpenseCategoryChart)
+                            {
+                                table.Cell().Text(item.Category);
+                                table.Cell().Text(item.TotalAmount.ToString("C"));
+                            }
+                        });
+                    });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text($"Generated : {DateTime.Now:dd MMM yyyy}");
+                });
+            }).GeneratePdf();
         }
     }
 }
