@@ -1,8 +1,66 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero-section">
+
+    <div class="hero-content">
+
+        <span class="hero-badge">
+            <i class="bi bi-wallet2"></i>
+            Smart Expense Management
+        </span>
+
+        <h1>
+            Take Control of <br />
+            Your Finances
+        </h1>
+
+        <p>
+            Track expenses, manage income, create budgets,
+            and monitor your financial progress from one place.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a asp-controller="Dashboard"
+               asp-action="Index"
+               class="btn btn-primary btn-lg">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Go to Dashboard
+            </a>
+
+            <a asp-controller="Expense"
+               asp-action="Create"
+               class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add Expense
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="hero-cards">
+
+        <div class="feature-card">
+            <i class="bi bi-cash-stack"></i>
+            <h5>Track Expenses</h5>
+            <p>Record daily expenses with categories and notes.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="bi bi-currency-rupee"></i>
+            <h5>Manage Income</h5>
+            <p>Keep every income source organized.</p>
+        </div>
+
+        <div class="feature-card">
+            <i class="bi bi-pie-chart"></i>
+            <h5>Budget Planning</h5>
+            <p>Create monthly budgets and stay on track.</p>
+        </div>
+
+    </div>
+
 </div>

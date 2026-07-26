@@ -2,515 +2,378 @@
 
 @{
     ViewData["Title"] = "Dashboard";
+
+    // Merge the two existing recent-activity lists into one chronological feed.
+    // Uses only Model.RecentExpenses / Model.RecentIncomes — no new data required.
+    var activity = new List<(string Title, decimal Amount, DateTime Date, bool IsIncome)>();
+
+    if (Model.RecentExpenses != null)
+    {
+        foreach (var e in Model.RecentExpenses)
+        {
+            activity.Add((e.Title, e.Amount, e.Date, false));
+        }
+    }
+
+    if (Model.RecentIncomes != null)
+    {
+        foreach (var i in Model.RecentIncomes)
+        {
+            activity.Add((i.Source, i.Amount, i.Date, true));
+        }
+    }
+
+    activity = activity.OrderByDescending(a => a.Date).Take(5).ToList();
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-start mb-4">
 
     <div>
-        <h2 class="fw-bold">
-            Financial Dashboard
-        </h2>
-
-        <p class="text-muted">
-            Monitor your income, expenses, and savings.
-        </p>
+        <p class="text-muted mb-0">Here's what's happening with your finances today.</p>
     </div>
 
     <div>
-        <a asp-action="ExportExcel"
-           class="btn btn-success me-2">
-            <i class="bi bi-file-earmark-excel"></i>
-            Excel
+        <a asp-action="ExportExcel" class="btn btn-success btn-sm me-2">
+            <i class="bi bi-file-earmark-excel"></i> Excel
         </a>
-
-        <a asp-action="ExportPdf"
-           class="btn btn-danger">
-            <i class="bi bi-file-earmark-pdf"></i>
-            PDF
+        <a asp-action="ExportPdf" class="btn btn-danger btn-sm">
+            <i class="bi bi-file-earmark-pdf"></i> PDF
         </a>
     </div>
 
 </div>
 
-<!-- Summary Cards -->
-<div class="row g-4">
+<!-- Stat tiles -->
+<div class="row g-3 mb-3">
 
     <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card income-card">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6>Total Income</h6>
-                    <h3>@Model.TotalIncome.ToString("C")</h3>
-                </div>
-                <div class="icon-circle bg-success">
-                    <i class="bi bi-cash-stack text-white fs-2"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card expense-card">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6>Total Expense</h6>
-                    <h3>@Model.TotalExpense.ToString("C")</h3>
-                </div>
-                <div class="icon-circle bg-danger">
-                    <i class="bi bi-wallet2 text-white fs-2"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card savings-card">
-            <div class="card-body d-flex justify-content-between align-items-center">
-
-                <div>
-                    <h6>Savings</h6>
-                    <h3>@Model.Savings.ToString("C")</h3>
-                </div>
-
-                <div class="icon-circle bg-primary">
-                    <i class="bi bi-piggy-bank text-white fs-2"></i>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card transaction-card">
-            <div class="card-body d-flex justify-content-between align-items-center">
-
-                <div>
-                    <h6>Transactions</h6>
-                    <h3>@Model.TotalTransactions</h3>
-                </div>
-
-                <div class="icon-circle bg-warning">
-                    <i class="bi bi-receipt text-white fs-2"></i>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-
-    <div class="row mt-4">
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Highest Expense</h6>
-                    <h4>@Model.HighestExpense.ToString("C")</h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Average Expense</h6>
-                    <h4>@Model.AverageExpense.ToString("C")</h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Top Category</h6>
-                    <h4>@Model.TopCategory</h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Budget Status</h6>
-
-                    @if (Model.IsBudgetExceeded)
-                    {
-                        <span class="badge bg-danger fs-6">
-                            Exceeded ❌
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-success fs-6">
-                            Within Budget ✅
-                        </span>
-                    }
-
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-<!-- Charts -->
-<div class="row mt-4">
-
-    <!-- Expense by Category -->
-    <div class="col-lg-6">
-
-        <div class="card shadow-lg border-0 rounded-4">
-
-            <div class="card-header fw-bold fs-5">
-                Expense by Category
-            </div>
-
+        <div class="card stat-tile">
             <div class="card-body">
-
-                <div style="height:350px;">
-                    <canvas id="expensePieChart"></canvas>
-                </div>
-
+                <div class="stat-icon bg-success"><i class="bi bi-arrow-up-right"></i></div>
+                <div class="stat-label">Total income</div>
+                <div class="stat-value">@Model.TotalIncome.ToString("C0")</div>
             </div>
-
         </div>
-
     </div>
 
-   
-
-    <!-- Monthly Expense Chart -->
-    <div class="col-lg-6">
-
-        <div class="card shadow">
-
-            <div class="card-header bg-success text-white">
-                Monthly Expenses
-            </div>
-
+    <div class="col-lg-3 col-md-6">
+        <div class="card stat-tile">
             <div class="card-body">
+                <div class="stat-icon bg-danger"><i class="bi bi-arrow-down-right"></i></div>
+                <div class="stat-label">Total expense</div>
+                <div class="stat-value">@Model.TotalExpense.ToString("C0")</div>
+            </div>
+        </div>
+    </div>
 
-                <div style="height:350px;">
+    <div class="col-lg-3 col-md-6">
+        <div class="card stat-tile">
+            <div class="card-body">
+                <div class="stat-icon bg-primary"><i class="bi bi-piggy-bank"></i></div>
+                <div class="stat-label">Savings</div>
+                <div class="stat-value">@Model.Savings.ToString("C0")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card stat-tile">
+            <div class="card-body">
+                <div class="stat-icon bg-warning"><i class="bi bi-receipt"></i></div>
+                <div class="stat-label">Transactions</div>
+                <div class="stat-value">@Model.TotalTransactions</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Secondary stats strip (kept from the original dashboard, just made compact) -->
+<div class="card mb-3">
+    <div class="stat-strip">
+        <div class="stat-strip-item">
+            <div class="stat-strip-label">Highest expense</div>
+            <div class="stat-strip-value">@Model.HighestExpense.ToString("C0")</div>
+        </div>
+        <div class="stat-strip-item">
+            <div class="stat-strip-label">Average expense</div>
+            <div class="stat-strip-value">@Model.AverageExpense.ToString("C0")</div>
+        </div>
+        <div class="stat-strip-item">
+            <div class="stat-strip-label">Top category</div>
+            <div class="stat-strip-value">@Model.TopCategory</div>
+        </div>
+        <div class="stat-strip-item">
+            <div class="stat-strip-label">Budget status</div>
+            @if (Model.IsBudgetExceeded)
+            {
+                <span class="badge bg-danger">Exceeded</span>
+            }
+            else
+            {
+                <span class="badge bg-success">Within budget</span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Charts + quick actions -->
+<div class="row g-3 mb-3">
+
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">Spending overview</div>
+            <div class="card-body">
+                <div style="height:220px;">
                     <canvas id="monthlyExpenseChart"></canvas>
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
-</div>
-
-<div class="card shadow-lg border-0 rounded-4 mt-4">
-
-    <div class="card-header fw-bold">
-        Monthly Budget
-    </div>
-
-    <div class="card-body">
-
-        <h5>Budget</h5>
-
-        <h3>@Model.MonthlyBudget.ToString("C")</h3>
-
-        <div class="progress mt-3" style="height:28px;">
-
-            <div class="progress-bar bg-success"
-                 role="progressbar"
-                 style="width:@Model.BudgetUsedPercentage%">
-
-                @Model.BudgetUsedPercentage.ToString("0")%
-
-            </div>
-
-        </div>
-
-        <div class="mt-3">
-
-            <strong>Remaining:</strong>
-
-            @Model.RemainingBudget.ToString("C")
-
-        </div>
-
-        @if (Model.IsBudgetExceeded)
-        {
-            <div class="alert alert-danger mt-3">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                Budget exceeded this month!
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-success mt-3">
-                <i class="bi bi-check-circle-fill"></i>
-                You're within your budget.
-            </div>
-        }
-
-    </div>
-
-</div>
-
-
-
-
-
-
-<!-- Recent Transactions -->
-<div class="row mt-4">
-
-    <!-- Recent Expenses -->
-    <div class="col-md-6">
-
-        <div class="card shadow">
-
-            <div class="card-header bg-danger text-white">
-                Recent Expenses
-            </div>
-
+    <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+            <div class="card-header">By category</div>
             <div class="card-body">
+                <div class="donut-wrap">
+                    <canvas id="expensePieChart"></canvas>
+                    <div class="donut-total">
+                        <div class="donut-total-value">@Model.TotalExpense.ToString("C0")</div>
+                        <div class="donut-total-label">Total</div>
+                    </div>
+                </div>
+                <div id="categoryLegend" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
 
-                @if (Model.RecentExpenses != null && Model.RecentExpenses.Any())
+    <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+            <div class="card-header">Quick actions</div>
+            <div class="card-body">
+                <a asp-controller="Expense" asp-action="Create" class="quick-action qa-success">
+                    Add expense <i class="bi bi-arrow-right"></i>
+                </a>
+                <a asp-controller="Income" asp-action="Create" class="quick-action qa-accent">
+                    Add income <i class="bi bi-arrow-right"></i>
+                </a>
+                <a asp-controller="Budget" asp-action="Index" class="quick-action qa-warning">
+                    Set budget <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Budget + recent activity -->
+<div class="row g-3">
+
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header">Monthly budget</div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline mb-2">
+                    <h3 class="mb-0">@Model.MonthlyBudget.ToString("C0")</h3>
+                    <span class="text-muted" style="font-size:13px;">of @Model.MonthlyBudget.ToString("C0") budget</span>
+                </div>
+
+                <div class="progress" style="height:10px;">
+                    <div class="progress-bar bg-primary"
+                         role="progressbar"
+                         style="width:@Model.BudgetUsedPercentage%">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-2" style="font-size:12.5px;">
+                    <span class="text-muted">Remaining @Model.RemainingBudget.ToString("C0")</span>
+                    <span class="text-muted">@Model.BudgetUsedPercentage.ToString("0")% used</span>
+                </div>
+
+                @if (Model.IsBudgetExceeded)
                 {
-                    <table class="table table-hover align-middle">
-
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            @foreach (var item in Model.RecentExpenses)
-                            {
-                                <tr>
-                                    <td>@item.Title</td>
-                                    <td>@item.Amount.ToString("C")</td>
-                                </tr>
-                            }
-
-                        </tbody>
-
-                    </table>
+                    <div class="alert alert-danger mt-3 mb-0">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Budget exceeded this month!
+                    </div>
                 }
                 else
                 {
-                    <p class="text-muted">No expenses found.</p>
+                    <div class="alert alert-success mt-3 mb-0">
+                        <i class="bi bi-check-circle-fill"></i>
+                        You're within your budget.
+                    </div>
                 }
-
             </div>
-
         </div>
-
     </div>
 
-    <!-- Recent Income -->
-    <div class="col-md-6">
-
-        <div class="card shadow">
-
-            <div class="card-header bg-success text-white">
-                Recent Income
-            </div>
-
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header">Recent activity</div>
             <div class="card-body">
-
-                @if (Model.RecentIncomes != null && Model.RecentIncomes.Any())
+                @if (activity.Any())
                 {
-                    <table class="table table-hover align-middle">
-
-                        <thead>
-                            <tr>
-                                <th>Source</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            @foreach (var item in Model.RecentIncomes)
-                            {
-                                <tr>
-                                    <td>@item.Source</td>
-                                    <td>@item.Amount.ToString("C")</td>
-                                </tr>
-                            }
-
-                        </tbody>
-
-                    </table>
+                    @foreach (var a in activity)
+                    {
+                        <div class="activity-row">
+                            <div class="activity-left">
+                                <div class="activity-icon @(a.IsIncome ? "bg-success" : "bg-danger")" style="opacity:0.85;">
+                                    <i class="bi @(a.IsIncome ? "bi-cash" : "bi-cart") text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="activity-title">@a.Title</div>
+                                    <div class="activity-date">@a.Date.ToString("MMM dd, yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="activity-amount" style="color:@(a.IsIncome ? "var(--success)" : "var(--danger)")">
+                                @(a.IsIncome ? "+" : "-")@a.Amount.ToString("C0")
+                            </div>
+                        </div>
+                    }
                 }
                 else
                 {
-                    <p class="text-muted">No income found.</p>
+                    <p class="text-muted mb-0">No recent activity.</p>
                 }
-
             </div>
-
         </div>
-
     </div>
 
 </div>
 
-<!-- Budget Usage -->
-   
+@section Scripts
+{
+    <script>
 
+            // ===========================
+            // Expense Category Donut Chart
+            // ===========================
 
-    @section Scripts
-    {
-        <script>
+            const labels = [
+                    @foreach (var item in Model.ExpenseCategoryChart)
+                {
+                    @: "@item.Category",
+                }
+                    ];
 
-                // ===========================
-                // Expense Category Pie Chart
-                // ===========================
+            const data = [
+                    @foreach (var item in Model.ExpenseCategoryChart)
+                {
+                    @: @item.TotalAmount,
+                }
+                    ];
 
-                const labels = [
-                        @foreach (var item in Model.ExpenseCategoryChart)
-                    {
-                        @: "@item.Category",
-                    }
-                        ];
+            const palette = ['#16A34A', '#4F46E5', '#D97706', '#DC2626', '#0284C7', '#9333EA'];
 
-                const data = [
-                        @foreach (var item in Model.ExpenseCategoryChart)
-                    {
-                        @: @item.TotalAmount,
-                    }
-                        ];
+            const ctx = document.getElementById('expensePieChart');
 
-                const ctx = document.getElementById('expensePieChart');
+            new Chart(ctx, {
+                type: 'doughnut',
 
-                new Chart(ctx, {
-                    type: 'pie',
+                data: {
+                    labels: labels,
 
-                    data: {
-                        labels: labels,
+                    datasets: [{
+                        label: 'Expenses',
+                        data: data,
+                        backgroundColor: palette,
+                        borderColor: '#ffffff',
+                        borderWidth: 3
+                    }]
+                },
 
-                        datasets: [{
-                            label: 'Expenses',
-                            data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
 
-                            backgroundColor: [
-                                '#4e79a7',
-                                '#f28e2b',
-                                '#e15759',
-                                '#76b7b2',
-                                '#59a14f',
-                                '#edc948',
-                                '#b07aa1',
-                                '#ff9da7',
-                                '#9c755f',
-                                '#bab0ab'
-                            ],
-
-                            borderColor: '#ffffff',
-                            borderWidth: 2
-                        }]
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
                     },
 
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                    animation: { duration: 1200 }
+                }
+            });
 
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            },
+            // Build the legend manually so it can sit under the donut like the reference design
+            const legendEl = document.getElementById('categoryLegend');
+            const total = data.reduce((a, b) => a + b, 0);
+            labels.forEach((label, i) => {
+                const pct = total > 0 ? Math.round((data[i] / total) * 100) : 0;
+                const row = document.createElement('div');
+                row.className = 'legend-row';
+                row.innerHTML = `<span class="legend-dot" style="background:${palette[i % palette.length]}"></span>${label} ${pct}%`;
+                legendEl.appendChild(row);
+            });
 
-                            tooltip: {
-                                enabled: true
-                            }
-                        },
+            // ===========================
+            // Monthly Expense Line Chart
+            // ===========================
 
-                        animation: {
-                            duration: 1500
-                        }
-                    }
-                });
+            const monthlyLabels = [
+                    @foreach (var item in Model.MonthlyExpenseChart)
+                {
+                    @: "@item.Month",
+                }
+                    ];
 
-                // ===========================
-                // Monthly Expense Line Chart
-                // ===========================
+            const monthlyData = [
+                    @foreach (var item in Model.MonthlyExpenseChart)
+                {
+                    @: @item.TotalExpense,
+                }
+                    ];
 
-                const monthlyLabels = [
-                        @foreach (var item in Model.MonthlyExpenseChart)
-                    {
-                        @: "@item.Month",
-                    }
-                        ];
+            const monthlyCtx = document.getElementById('monthlyExpenseChart');
 
-                const monthlyData = [
-                        @foreach (var item in Model.MonthlyExpenseChart)
-                    {
-                        @: @item.TotalExpense,
-                    }
-                        ];
+            new Chart(monthlyCtx, {
 
-                const monthlyCtx = document.getElementById('monthlyExpenseChart');
+                type: 'line',
 
-                new Chart(monthlyCtx, {
+                data: {
+                    labels: monthlyLabels,
 
-                    type: 'line',
+                    datasets: [{
+                        label: 'Monthly Expenses',
+                        data: monthlyData,
+                        borderColor: '#4F46E5',
+                        backgroundColor: 'rgba(79,70,229,0.10)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#4F46E5'
+                    }]
+                },
 
-                    data: {
-                        labels: monthlyLabels,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
 
-                        datasets: [{
-                            label: 'Monthly Expenses',
-
-                            data: monthlyData,
-
-                            borderColor: '#198754',
-                            backgroundColor: 'rgba(25,135,84,0.2)',
-
-                            borderWidth: 3,
-
-                            fill: true,
-
-                            tension: 0.4,
-
-                            pointRadius: 5,
-
-                            pointHoverRadius: 8,
-
-                            pointBackgroundColor: '#198754'
-                        }]
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
                     },
 
-                    options: {
+                    animation: { duration: 1200 },
 
-                        responsive: true,
-
-                        maintainAspectRatio: false,
-
-                        plugins: {
-
-                            legend: {
-                                position: 'bottom'
-                            },
-
-                            tooltip: {
-                                enabled: true
-                            }
-
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#E7E8EF' },
+                            ticks: { color: '#6B6E85' }
                         },
-
-                        animation: {
-                            duration: 1500
-                        },
-
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#6B6E85' }
                         }
-
                     }
+                }
 
-                });
+            });
 
-        </script>
-    }
+    </script>
+}

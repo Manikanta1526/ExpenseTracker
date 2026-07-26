@@ -1,32 +1,78 @@
 ﻿@model ExpenseTracker.ViewModels.BudgetViewModel
 
-<h2>Monthly Budget</h2>
+@{
+    ViewData["Title"] = "Budget";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h2 class="fw-bold mb-1">Monthly Budget</h2>
+
+        <p class="text-muted mb-0">
+            Set your spending limit for this month.
+        </p>
+
+    </div>
+
+</div>
 
 @if (TempData["Success"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success mb-4">
+        <i class="bi bi-check-circle-fill me-2"></i>
         @TempData["Success"]
     </div>
 }
 
-<form asp-action="Index" method="post">
+<div class="card shadow-sm">
 
-    <div class="mb-3">
+    <div class="card-header">
+        Budget Settings
+    </div>
 
-        <label asp-for="MonthlyBudget"></label>
+    <div class="card-body">
 
-        <input asp-for="MonthlyBudget" class="form-control" />
+        <form asp-action="Index" method="post">
 
-        <span asp-validation-for="MonthlyBudget"
-              class="text-danger"></span>
+            <div class="mb-4">
+
+                <label asp-for="MonthlyBudget"
+                       class="form-label fw-semibold">
+                </label>
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        ₹
+                    </span>
+
+                    <input asp-for="MonthlyBudget"
+                           class="form-control form-control-lg" />
+
+                </div>
+
+                <span asp-validation-for="MonthlyBudget"
+                      class="text-danger">
+                </span>
+
+            </div>
+
+            <button type="submit"
+                    class="btn btn-success">
+
+                <i class="bi bi-check-circle me-2"></i>
+
+                Save Budget
+
+            </button>
+
+        </form>
 
     </div>
 
-    <button class="btn btn-success">
-        Save Budget
-    </button>
-
-</form>
+</div>
 
 @section Scripts {
 

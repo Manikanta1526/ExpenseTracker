@@ -4,63 +4,103 @@
     ViewData["Title"] = "Income";
 }
 
-<h2>Income</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="fw-bold mb-0">Income</h2>
+        <p class="text-muted mb-0">Every income source you've logged.</p>
+    </div>
 
-<p>
     <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i>
         Add Income
     </a>
-</p>
+</div>
 
-<table class="table table-bordered table-striped">
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="empty-state">
 
-    <thead>
+            <i class="bi bi-cash-coin"></i>
 
-        <tr>
+            <h3>
+                No Income Yet
+            </h3>
 
-            <th>Source</th>
+            <p>
+                Start by adding your first income source.
+            </p>
 
-            <th>Amount</th>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                Add Income
+            </a>
 
-            <th>Date</th>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body p-0">
 
-            <th>Actions</th>
+            <table class="table table-hover align-middle mb-0">
 
-        </tr>
+                <thead>
 
-    </thead>
+                    <tr>
 
-    <tbody>
+                        <th>Source</th>
 
-        @foreach (var item in Model)
-        {
-            <tr>
+                        <th>Amount</th>
 
-                <td>@item.Source</td>
+                        <th>Date</th>
 
-                <td>@item.Amount.ToString("C")</td>
+                        <th>Actions</th>
 
-                <td>@item.Date.ToShortDateString()</td>
+                    </tr>
 
-                <td>
+                </thead>
 
-                    <a asp-action="Edit"
-                       asp-route-id="@item.IncomeId"
-                       class="btn btn-warning btn-sm">
-                        Edit
-                    </a>
+                <tbody>
 
-                    <a asp-action="Delete"
-                       asp-route-id="@item.IncomeId"
-                       class="btn btn-danger btn-sm">
-                        Delete
-                    </a>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
 
-                </td>
+                            <td>@item.Source</td>
 
-            </tr>
-        }
+                            <td>@item.Amount.ToString("C")</td>
 
-    </tbody>
+                            <td>@item.Date.ToShortDateString()</td>
 
-</table>
+                            <td>
+
+                                <div class="row-actions">
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.IncomeId"
+                                       class="btn-icon btn-icon-edit"
+                                       title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.IncomeId"
+                                       class="btn-icon btn-icon-delete"
+                                       title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+}

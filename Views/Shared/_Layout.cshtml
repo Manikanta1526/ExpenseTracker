@@ -5,6 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ExpenseTracker</title>
     <script type="importmap"></script>
+
+    <!--
+        Apply the saved theme BEFORE any stylesheet loads or the page paints.
+        This must be a plain, render-blocking inline script placed here in
+        <head> (not at the bottom of <body>, not inside DOMContentLoaded) —
+        otherwise the browser paints once in light mode first, then flips to
+        dark a moment later, which is the white flash on navigation.
+    -->
+    <script>
+            (function() {
+                if (localStorage.getItem("theme") === "dark") {
+                    document.documentElement.setAttribute("data-theme", "dark");
+                }
+            })();
+    </script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ExpenseTracker.styles.css" asp-append-version="true" />
@@ -13,111 +29,95 @@
 </head>
 <body>
 
-    <div class="container-fluid">
+    <div class="app-shell">
 
-        <div class="row">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
 
-            <!-- Sidebar -->
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="sidebar-brand text-decoration-none">
 
-            <div class="col-md-2 bg-dark text-white min-vh-100">
+                <span class="brand-icon">
+                    <i class="bi bi-wallet2"></i>
+                </span>
 
-                <div class="p-3">
+                <span class="brand-text">
+                    ExpenseTracker
+                </span>
 
-                    <h3>
-                        <i class="bi bi-wallet2"></i>
-                        ExpenseTracker
-                    </h3>
+            </a>
 
-                    <hr />
+            <ul class="sidebar-nav">
 
-                    <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a asp-controller="Dashboard"
+                       asp-action="Index"
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
 
-                        <li class="nav-item mb-2">
-                            <a asp-controller="Dashboard"
-                               asp-action="Index"
-                               class="nav-link text-white">
+                <li class="nav-item">
+                    <a asp-controller="Expense"
+                       asp-action="Index"
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Expense" ? "active" : "")">
+                        <i class="bi bi-cash-stack"></i>
+                        <span>Expenses</span>
+                    </a>
+                </li>
 
-                                <i class="bi bi-speedometer2"></i>
+                <li class="nav-item">
+                    <a asp-controller="Income"
+                       asp-action="Index"
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Income" ? "active" : "")">
+                        <i class="bi bi-currency-rupee"></i>
+                        <span>Income</span>
+                    </a>
+                </li>
 
-                                Dashboard
+                <li class="nav-item">
+                    <a asp-controller="Budget"
+                       asp-action="Index"
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Budget" ? "active" : "")">
+                        <i class="bi bi-piggy-bank"></i>
+                        <span>Budget</span>
+                    </a>
+                </li>
 
-                            </a>
-                        </li>
+            </ul>
 
-                        <li class="nav-item mb-2">
+        </aside>
 
-                            <a asp-controller="Expense"
-                               asp-action="Index"
-                               class="nav-link text-white">
+        <!-- Main Content -->
+        <div id="mainContent" class="main-col">
 
-                                <i class="bi bi-cash-stack"></i>
+            <nav class="topbar">
+                <button id="toggleSidebar"
+                        class="btn btn-light btn-sm me-3">
 
-                                Expenses
+                    <i class="bi bi-list"></i>
 
-                            </a>
+                </button>
 
-                        </li>
+                <div class="d-flex align-items-center gap-3">
 
-                        <li class="nav-item mb-2">
+                    <button id="themeToggle"
+                            class="btn btn-light btn-sm">
 
-                            <a asp-controller="Income"
-                               asp-action="Index"
-                               class="nav-link text-white">
+                        <i class="bi bi-moon"></i>
 
-                                <i class="bi bi-currency-rupee"></i>
+                    </button>
 
-                                Income
-
-                            </a>
-
-                        </li>
-
-                        <li class="nav-item mb-2">
-
-                            <a asp-controller="Budget"
-                               asp-action="Index"
-                               class="nav-link text-white">
-
-                                <i class="bi bi-piggy-bank"></i>
-
-                                Budget
-
-                            </a>
-
-                        </li>
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-            <!-- Main Content -->
-
-            <div class="col-md-10">
-
-                <nav class="navbar navbar-light bg-white shadow-sm">
-
-                    <div class="container-fluid">
-
-                        <span class="navbar-brand">
-
-                            Welcome 👋
-
-                        </span>
-
-                        <partial name="_LoginPartial" />
-
-                    </div>
-
-                </nav>
-
-                <div class="p-4">
-
-                    @RenderBody()
+                    <partial name="_LoginPartial" />
 
                 </div>
 
+            </nav>
+
+            <div class="page-body">
+                @RenderBody()
             </div>
 
         </div>
@@ -156,8 +156,8 @@
                 </div>
             }
 
-    @if (TempData["Error"] != null)
-    {
+            @if (TempData["Error"] != null)
+            {
                 <div id="errorToast"
                      class="toast align-items-center text-bg-danger border-0 mt-2"
                      role="alert"
@@ -194,30 +194,81 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-
     <script>
             document.addEventListener("DOMContentLoaded", function() {
 
+                // ==========================
+                // Toast Notifications
+                // ==========================
                 var successToast = document.getElementById("successToast");
 
                 if (successToast) {
-                    var toast = new bootstrap.Toast(successToast, {
+                    new bootstrap.Toast(successToast, {
                         delay: 3000,
                         animation: true
-                    });
-
-                    toast.show();
+                    }).show();
                 }
 
                 var errorToast = document.getElementById("errorToast");
 
                 if (errorToast) {
-                    var toast = new bootstrap.Toast(errorToast, {
+                    new bootstrap.Toast(errorToast, {
                         delay: 4000,
                         animation: true
-                    });
+                    }).show();
+                }
 
-                    toast.show();
+                // ==========================
+                // Sidebar Toggle
+                // ==========================
+                const sidebar = document.getElementById("sidebar");
+                const toggle = document.getElementById("toggleSidebar");
+
+                if (sidebar && toggle) {
+                    toggle.addEventListener("click", function() {
+                        sidebar.classList.toggle("collapsed");
+                    });
+                }
+
+                // ==========================
+                // Dark Mode
+                // ==========================
+                const themeButton = document.getElementById("themeToggle");
+
+                if (themeButton) {
+
+                    const icon = themeButton.querySelector("i");
+
+                    // Theme itself was already applied in <head> before paint;
+                    // here we just sync the icon to match on load.
+                    const isDarkOnLoad =
+                        document.documentElement.getAttribute("data-theme") === "dark";
+
+                    icon.className = isDarkOnLoad ? "bi bi-sun" : "bi bi-moon";
+
+                    themeButton.addEventListener("click", function() {
+
+                        const isDark =
+                            document.documentElement.getAttribute("data-theme") === "dark";
+
+                        if (isDark) {
+
+                            document.documentElement.removeAttribute("data-theme");
+
+                            localStorage.setItem("theme", "light");
+
+                            icon.className = "bi bi-moon";
+
+                        } else {
+
+                            document.documentElement.setAttribute("data-theme", "dark");
+
+                            localStorage.setItem("theme", "dark");
+
+                            icon.className = "bi bi-sun";
+                        }
+
+                    });
                 }
 
             });
